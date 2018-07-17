@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -71,7 +72,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     MY_PERMISSIONS_REQUEST_FINE_LOCATION);
         }
         /*
-        // Create the LocationRequest object (do this after location permission granted)
+        // Create the LocationRequest object (do this after location permission granted which is why i commented it out here)
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(10 * 1000)        // 10 seconds, in milliseconds
@@ -100,6 +101,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
     }
 
     // Get permission result
@@ -140,7 +143,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         /*
-        // Add a marker in Seattle and move the camera (as defautl)
+        // Add a marker in Seattle and move the camera (as default) commented this out because instead I add one based on current location
         LatLng seattle = new LatLng(47.6, -122.3);
         // marker at location displaying the message "Marker in Seattle"
         mMap.addMarker(new MarkerOptions().position(seattle).title("Marker in Seattle"));
@@ -154,9 +157,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         mMap.setMyLocationEnabled(true);
-    }
 
-    /*
+        //this part is harcoded for testing purposes
+        ArrayList<LatLng> points = new ArrayList<>();
+        LatLng p = new LatLng(47.62, -122.35); // space needle coordinate
+        points.add(p);
+        LatLng s = new LatLng(47.595, -122.3); // century link field coordinate
+        points.add(s);
+        LatLng t = new LatLng(46.85, -121.76); // mt. rainier coordinate
+        points.add(t);
+        LatLng u = new LatLng(47.611, -122.33); // washington state convention center coordinate
+        points.add(u);
+        addPins(points);
+    }
+    // adds pins at all locations in array
+    public void addPins(ArrayList<LatLng> points){
+        for(LatLng p:points)
+            addMarker(p);
+    }
+    /* this was when the search bar was a button and edit text (now has autocomplete) however, the geocoder thing is useful
     // called when search buttton clicked, marker added to the location user types in search bar
     public void onMapSearch(View view) {
         // initialize edit text where user types in location
@@ -193,6 +212,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.addMarker(markerOptions);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(p.getLatLng()));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
+
+    }
+
+    // add a marker based on latlng rather than place
+    public void addMarker(LatLng p){
+
+        MarkerOptions markerOptions = new MarkerOptions();
+
+        markerOptions.position(p);
+        markerOptions.title("Point of Interest");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+        mMap.addMarker(markerOptions);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(p));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
 
     }
